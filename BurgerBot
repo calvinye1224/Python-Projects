@@ -1,0 +1,168 @@
+#This code is a basic burger bot where it takes your order and shows certain statistics.
+'''
+1. Manager: This feature enables the manager to enter the manager code and enter the quantity of burgers needed.
+2. Display: This presents all of the available order options including standard or custom
+3. Order: The customers place orders for burgers.
+4. Report: Provides the statistics for the bot machine.
+'''
+#Ask manager code
+managerCode = "0364a59-0"
+managerCodeInput = input("Please enter the manager code to start the machine:")
+while managerCodeInput != "0364a59-0":
+    managerCodeInput = input("Please enter the manager code to start the machine:")
+
+# Below is the input variable that asks the manager how many burgers the bot is preloaded for. Manager inputs the # of Burgers have been preloaded,
+PRELOAD_BURGERS = int(input("Enter how many burgers has the machine been preloaded for:"))
+
+# Below are defined variables that count the specific burgers being placed and the total cook time in seconds.
+ORDER_COUNT = 0
+CUSTOM_BURGER = 0
+STANDARD_BURGER = 0
+COOK_TIME = 0
+
+# Below is the variable that is going to help validate which type of burger is selected.
+burgerType = "S"
+
+# Below is the variable that gets updated if any orders have been canceled.
+canceledOrders = 0
+
+# Below Prints the menu option for the customers.
+print()
+print()
+print("--------------------------------------------------")
+print("Welcome to Burger Bot!")
+print("We offer 2 kinds of burgers:")
+print("STANDARD, which has")
+print("    sauce, pickles, tomato, onion, lettuce, and cheese on it,")
+print("for $7.82 and")
+print("CUSTOM, for which you choose your toppings.")
+print()
+print("Cost of burgers with toppings (sauce is free of charge):")
+price = 6.00
+for var in range(0, 5):
+    print(f"   with {var} toppings: ${price:.2f}")
+    price += 0.33
+print("Add cheese with any toppings for extra $0.50")
+print("--------------------------------------------------")
+
+# Below is the loop that allows customers to keep ordering as long as there are enough burgers loaded.
+while PRELOAD_BURGERS > ORDER_COUNT:
+    print()
+    # Below is if statement that checks to see if this is the first Order.
+    if ORDER_COUNT != 0 or canceledOrders != 0:
+        print("Welcome to Burger Bot!", end=" ")
+    name = input("Please enter your name:")
+
+    # Below is if statement that checks to see if the name is not the manager code in order to continue the ordering process. Else it will display current statistics of Burger Bot.
+    if name != managerCode:
+        print(name, ", please enter the details of your order.", sep="")
+        print("What kind of burger are you looking for: Standard[S] or Custom[C]?")
+        burgerType = "S"
+        # Below is a loop that will continue to ask what type of burger is being ordered until the user inputs Either S or C correctly.
+        while burgerType == "S" or burgerType == "C":
+            burgerType = input("Please enter S or C:")
+
+            # Below is the if statement that checks to see if the burger type is Custom and prints the corresponding selection process and statistics for that order.
+            if burgerType == "C":
+                SAUCE = int(input("Sauce? 1 for yes, 0 for no:"))
+                PICKLES = int(input("Pickles? 1 for yes, 0 for no:"))
+                TOMATO = int(input("Tomatoes? 1 for yes, 0 for no:"))
+                ONION = int(input("Onion? 1 for yes, 0 for no:"))
+                LETTUCE = int(input("Lettuce? 1 for yes, 0 for no:"))
+                CHEESE = int(input("Cheese? 1 for yes, 0 for no:"))
+
+                # Below is the code that calculates the total time in seconds it takes to serve the burger.
+                totalTime = 6 + (4 * (SAUCE + PICKLES + TOMATO + ONION + LETTUCE + CHEESE)) + (
+                            CHEESE * 45) + 150 + 27
+
+                # Below is the code that calculates the cost of the burger.
+                TOPPING = 0.33
+                totalCost = 6 + (PICKLES * TOPPING) + (TOMATO * TOPPING) + (
+                            ONION * TOPPING) + (LETTUCE * TOPPING) + (CHEESE * 0.50)
+
+                # Below is the code that changes the total time into minutes and seconds
+                totalMinutes = (totalTime // 60)
+                totalSecs = totalTime % 60
+
+                # Below is the code that prints the time it takes and the cost of the burger.
+                print()
+                print(name, ", your burger will be ready in", sep="", end=" ")
+                print(totalTime, " seconds, which is ", totalMinutes, " minutes and ", totalSecs, " seconds.", sep="")
+                print("The cost is $", format(totalCost, '0.2f'), sep="")
+                print("Enjoy your burger, ", name, "!", sep="")
+                ORDER_COUNT += 1
+                CUSTOM_BURGER += 1
+                COOK_TIME += totalTime
+                print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- ")
+                burgerType = "k"
+
+            # Below is the elif statement that checks to see if the burger type is Standard and prints the corresponding selection process and statistics for that order.
+            elif burgerType == "S":
+                burgersLeft = PRELOAD_BURGERS - ORDER_COUNT
+                standardOrder = int(
+                    input(f"How many would you like to order? Enter a number 1.. {burgersLeft} or 0 to cancel order:"))
+
+                # Below is if statement to check if customer didnt cancel order.
+                if standardOrder != 0:
+
+                    # While loop that goes until customer orders an amount of burgers that is less than or equal to the burgers left in the burger bot.
+                    while burgersLeft < standardOrder:
+                        standardOrder = int(
+                            input(f"How many would you like to order? Enter a number 1.. {burgersLeft} or 0 to cancel order:"))
+
+                    # Calculates the total price and total cook time of the order.
+                    STANDORDER_COST = 7.82
+                    STANDORDER_COOKTIME = 252
+
+                    totalCost = STANDORDER_COST * standardOrder
+                    totalTime = STANDORDER_COOKTIME * standardOrder
+                    COOK_TIME += totalTime
+
+                    # Below is the code that changes the total time into minutes and seconds
+                    totalMinutes = (totalTime // 60)
+                    totalSecs = totalTime % 60
+
+                    # Below is the code that prints the time it takes and the cost of the Order.
+                    print()
+                    print(name, ", your order will be ready in", sep="", end=" ")
+                    print(totalTime, " seconds, which is ", totalMinutes, " minutes and ", totalSecs, " seconds.",
+                          sep="")
+                    print("The cost is $", format(totalCost, '0.2f'), sep="")
+                    print("Enjoy your burger, ", name, "!", sep="")
+                    ORDER_COUNT += standardOrder
+                    STANDARD_BURGER += standardOrder
+                    print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
+                    burgerType = "k"
+                    standardOrder = PRELOAD_BURGERS
+                else:
+                    print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*- ")
+                    canceledOrders += 1
+                    burgerType = "k"
+            else:
+                burgerType = "S"
+    else:
+        print()
+        print("The latest statistics are:")
+        print(format("Total burgers ordered:", '>28s'), format(ORDER_COUNT, '>9d'))
+        print(format("of them Standard:", '>28s'), format(STANDARD_BURGER, '>9d'))
+        print(format("and Custom:", '>28s'), format(CUSTOM_BURGER, '>9d'))
+        cookTimeInHrs = COOK_TIME // 3600
+        cookTimeInMinutes = (COOK_TIME - (cookTimeInHrs * 3600)) // 60
+        cookTimeInSecs = COOK_TIME % 60
+        str1 = format(cookTimeInHrs, '02d'), ":", format(cookTimeInMinutes, '02d'), ":", format(cookTimeInSecs, '02d')
+        print(format("Total Cooking time (hh:mm:ss) ", '>28s'),
+              format(cookTimeInHrs, '02d'), ":", format(cookTimeInMinutes, '02d'), ":", format(cookTimeInSecs, '02d'),
+              sep="")
+        print("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-")
+#The bot statistics
+print()
+print("Machine must be reloaded.")
+print("The latest statistics are:")
+print(format("Total burgers ordered:", '>28s'), format(ORDER_COUNT, '>9d'))
+print(format("of them Standard:", '>28s'), format(STANDARD_BURGER, '>9d'))
+print(format("and Custom:", '>28s'), format(CUSTOM_BURGER, '>9d'))
+cookTimeInHrs = COOK_TIME // 3600
+cookTimeInMinutes = (COOK_TIME - (cookTimeInHrs * 3600)) // 60
+cookTimeInSecs = COOK_TIME % 60
+print(format("Total Cooking time (hh:mm:ss) ", '>28s'),
+      format(cookTimeInHrs, '02d'), ":", format(cookTimeInMinutes, '02d'), ":", format(cookTimeInSecs, '02d'), sep="")
